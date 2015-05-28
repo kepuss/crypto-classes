@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="bcprov-debug-jdk15on-152">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/bcprov-debug-jdk15on-152.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/junit-4.12.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/hamcrest-core-1.3.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/args4j-2.32.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Downloads/args4j-2.32.jar!/OSGI-OPT/src" />
+    </SOURCES>
+  </library>
+</component>
