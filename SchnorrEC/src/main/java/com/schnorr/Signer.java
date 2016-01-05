@@ -1,6 +1,8 @@
 package com.schnorr;
 
 import com.Signable;
+import lombok.Getter;
+import lombok.Setter;
 import org.bouncycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
@@ -8,6 +10,8 @@ import java.math.BigInteger;
 /**
  * Created by kepuss on 27.10.15.
  */
+@Getter
+@Setter
 public class Signer implements Signable{
     private String message;
     private PrivateKey sk;

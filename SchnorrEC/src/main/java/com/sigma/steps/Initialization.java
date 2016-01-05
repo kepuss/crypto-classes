@@ -6,12 +6,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bouncycastle.math.ec.ECPoint;
 
+import java.math.BigInteger;
+
 /**
  * Created by kepuss on 04.01.16.
  */
 @Getter
 @Setter
 public class Initialization implements Sendable {
+    private BigInteger X;
     private String ephx;
     private String session;
 

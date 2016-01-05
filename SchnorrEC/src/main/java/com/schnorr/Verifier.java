@@ -1,5 +1,7 @@
 package com.schnorr;
 
+import com.Verifiable;
+import com.communication.builder.SignatureBuilder;
 import org.bouncycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
@@ -7,7 +9,7 @@ import java.math.BigInteger;
 /**
  * Created by kepuss on 27.10.15.
  */
-public class Verifier {
+public class Verifier implements Verifiable {
     private PublicKey pk;
     private Signature signature;
     private Generator generator;
@@ -17,6 +19,13 @@ public class Verifier {
         this.signature=signature;
         this.generator=genrator;
     }
+
+    public Verifier(PublicKey pk, com.communication.model.Signature signature,Generator genrator){
+        this.pk = pk;
+        this.signature= SignatureBuilder.getSchnorrSign(signature);
+        this.generator=genrator;
+    }
+
 
     public boolean verify(String message){
         //1
