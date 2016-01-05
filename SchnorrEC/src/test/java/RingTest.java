@@ -21,6 +21,6 @@ public class RingTest {
 
 
         Verifier verifier = new Verifier(gen,ring);
-        System.out.print(verifier.verify(signature));
+        System.out.print(verifier.verify(signature,"Message"));
     }
 }

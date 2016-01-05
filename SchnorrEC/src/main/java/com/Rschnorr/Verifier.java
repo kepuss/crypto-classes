@@ -1,10 +1,12 @@
 package com.Rschnorr;
 
 import com.schnorr.Generator;
+import com.schnorr.Hasher;
 import com.schnorr.PublicKey;
 import org.bouncycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,7 +21,16 @@ public class Verifier {
         this.ring = ring;
     }
 
-    public boolean verify(Signature signature){
+    public boolean verify(Signature signature, String message){
+
+        for(int i =0;i<signature.getH().size();i++){
+            BigInteger hash = new BigInteger(1, Hasher.hash(message,signature.getR().get(i).normalize().getRawXCoord().toBigInteger(),gen.getHashName()));
+            System.out.println(hash.toString(16));
+            System.out.println(signature.getH().get(i).toString(16));
+            if(!hash.equals(signature.getH().get(i))){
+                return false;
+            }
+        }
         //1
         BigInteger left = new BigInteger(gen.getECPoint(signature.getSigma(), gen.getG()).getEncoded(false)).mod(gen.getN());
         BigInteger right = calculateRight(signature);

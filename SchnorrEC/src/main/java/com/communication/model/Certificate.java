@@ -14,8 +14,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Certificate implements Sendable{
-    @JsonProperty("BODY")
+    @JsonProperty("body")
     private Body body;
-    @JsonProperty("SIGN")
+    @JsonProperty("sign")
     private Signature signature;
 }

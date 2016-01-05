@@ -39,7 +39,7 @@ public class Signer {
         ECPoint ga = gen.getECPoint(a, gen.getG());
         ECPoint multiY= null;
         for(int i =0;i <ring.getRingSize();i++){
-            BigInteger hash = new BigInteger(Hasher.hash(message,new BigInteger(RList.get(i).getEncoded(false)),gen.getHashName()));
+            BigInteger hash = new BigInteger(1,Hasher.hash(message,RList.get(i).normalize().getRawXCoord().toBigInteger(),gen.getHashName()));
             hashList.add(hash);
             if(multiY == null){
                 multiY = gen.getECPoint(hash.negate(),ring.getRingPKs().get(i).getP());
@@ -86,7 +86,7 @@ public class Signer {
     }
 
     private BigInteger generateSigma(String message, ECPoint Rs,List<BigInteger> hashList, int position, BigInteger a, BigInteger aSum ){
-        BigInteger orgHash = new BigInteger(Hasher.hash(message, new BigInteger(Rs.getEncoded(false)), gen.getHashName()));
+        BigInteger orgHash = new BigInteger(1,Hasher.hash(message, Rs.normalize().getRawXCoord().toBigInteger(), gen.getHashName()));
         hashList.add(position,orgHash);
         BigInteger sigEnd = gen.getSk().getA().multiply(orgHash);//.mod(gen.getN());
         return a.add(aSum).add(sigEnd).mod(gen.getN());

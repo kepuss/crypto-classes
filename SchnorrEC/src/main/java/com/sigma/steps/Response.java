@@ -2,38 +2,53 @@ package com.sigma.steps;
 
 import com.Signable;
 
+import com.Utils;
 import com.communication.builder.BodyBuilder;
-import com.communication.builder.SignatureBuilder;
 import com.communication.model.Certificate;
 import com.communication.model.Signature;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.schnorr.Generator;
 import com.sigma.Sendable;
 import com.sigma.Sender;
 import lombok.Getter;
 import lombok.Setter;
 import org.bouncycastle.math.ec.ECPoint;
-import org.bouncycastle.util.Arrays;
 
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by kepuss on 04.01.16.
  */
-@Getter
-@Setter
+
 public class Response implements Sendable {
+    @JsonIgnore
+    private BigInteger K1;
+    @JsonIgnore
+    private BigInteger K0;
+
+    @Getter
+    @Setter
     private String ephy;
+    @Getter
+    @Setter
     private Certificate certb;
+    @Getter
+    @Setter
     private Signature signb;
+    @Getter
+    @Setter
     private String macb;
+    @Getter
+    @Setter
     private String session;
 
+    @JsonIgnore
     final static String KEY_HOLDER = "MICHALK";
+    @JsonIgnore
     final static String CA_NAME = "DUMMYNAME";
-    final static BigInteger OPAD = new BigInteger("47474747474747474747474747474747", 16);
-    final static BigInteger IPAD = new BigInteger("74747474747474747474747474747474", 16);
+    @JsonIgnore
+    final static String PREFIX = "01";
+
 
     public Response(Generator gen, Signable signer, Initialization init) {
         //session = gen.getRandomBigInt().toString(16);
@@ -42,17 +57,19 @@ public class Response implements Sendable {
         BigInteger Y = gen.getRandomBigInt();
         ECPoint g_Y = gen.getECPoint(Y, gen.getG());
 
-        ECPoint g_X = getInitPoint(init, gen);
+        ECPoint g_X = Utils.getECPoint(init.getEphx(), gen);
         ECPoint K = gen.getECPoint(Y, g_X);
 
 
-        ephy = ecToString(g_Y);
+        ephy = Utils.ecToString(g_Y);
         certb = getCert(gen);
-        signb = getSign(init, signer);
+        signb = getSign(PREFIX, init, signer);
 
-        BigInteger K0 = new BigInteger(KDF(K,0));
+         K1 = new BigInteger(1,Utils.KDF(K, 1));
+         K0 = new BigInteger(1,Utils.KDF(K, 0));
 
-        macb = getMac(K0,init,gen);
+
+        macb = getMac(PREFIX, K1,init,gen);
     }
 
     private Certificate getCert(Generator gen) {
@@ -65,61 +82,23 @@ public class Response implements Sendable {
         return certificate;
     }
 
-    private Signature getSign(Initialization init, Signable signer) {
-        String payload = "00" + init.getSession() + ephy + init.getEphx();
+    private Signature getSign(String prefix, Initialization init, Signable signer) {
+        String payload = prefix + init.getSession()  + init.getEphx()+ ephy;
         return signer.sign(payload);
     }
 
-    private String getMac(BigInteger X, Initialization init, Generator gen) {
-        String message = "00" + init.getSession() + new BigInteger(Sender.send(gen, certb, false).getBytes()).toString(16);
-        return new BigInteger(computeMac(message.getBytes(),X)).toString(16);
+    private String getMac(String prefix, BigInteger X, Initialization init, Generator gen) {
+        String message = prefix + init.getSession() + new BigInteger(Sender.send(gen, certb, false).getBytes()).toString(16);
+        return new BigInteger(1,Utils.computeMac(message.getBytes(), X)).toString(16);
 
     }
 
-    private byte[] computeMac(byte[] message, BigInteger key) {
-        MessageDigest hash = null;
-        try {
-            hash = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        BigInteger xorOpad = key.xor(OPAD);
-        BigInteger xorIpad = key.xor(IPAD);
-
-        byte[] ipadMessage = Arrays.concatenate(xorIpad.toByteArray(), message);
-
-        byte[] firstHash = hash.digest(ipadMessage);
-
-        byte[] finalHashInput = Arrays.concatenate(xorOpad.toByteArray(), firstHash);
-
-        return hash.digest(finalHashInput);
-
+    @JsonIgnore
+    public BigInteger getK1() {
+        return K1;
     }
-
-    private ECPoint getInitPoint(Initialization init, Generator gen) {
-        String pk = init.getEphx().substring(2);
-        String pkX = pk.substring(0, pk.length() / 2);
-        String pkY = pk.substring((pk.length() / 2), pk.length());
-        return gen.getCurve().getCurve().createPoint(new BigInteger(pkX, 16), new BigInteger(pkY, 16));
+    @JsonIgnore
+    public BigInteger getK0() {
+        return K0;
     }
-
-    private byte[] KDF(ECPoint K,int i){
-        MessageDigest hash = null;
-        try {
-            hash = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        byte[] input = Arrays.append(ecToString(K).getBytes(),(byte)i);
-        byte[] output = hash.digest(input);
-
-        return Arrays.copyOf(output,128);
-    }
-
-    private String ecToString(ECPoint p){
-        return "04"+new BigInteger(p.normalize().getAffineXCoord().getEncoded()).toString(16)+new BigInteger(p.normalize().getAffineYCoord().getEncoded()).toString(16);
-    }
-
-
 }

@@ -63,7 +63,7 @@ public class Generator {
     }
 
     public ECPoint getECPoint(BigInteger a, ECPoint point) {
-        ECPoint randomPoint = point.multiply(a).normalize();
+        ECPoint randomPoint = point.normalize().multiply(a).normalize();
         return randomPoint;
     }
 

@@ -32,7 +32,7 @@ public class Signer implements Signable{
 
 
         //2
-        BigInteger r = new BigInteger(Hasher.hash(message, Q.getRawXCoord().toBigInteger(),g.getHashName())).mod(g.getN());
+        BigInteger r = new BigInteger(1,Hasher.hash(message, Q.getRawXCoord().toBigInteger(),g.getHashName())).mod(g.getN());
         //3
         BigInteger s =  k.subtract(sk.getA().multiply(r)).mod(g.getN());
 
