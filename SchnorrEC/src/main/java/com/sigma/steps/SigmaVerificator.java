@@ -1,6 +1,7 @@
 package com.sigma.steps;
 
 import com.Utils;
+import com.Verifiable;
 import com.communication.model.Certificate;
 import com.communication.model.Signature;
 import com.schnorr.Generator;
@@ -20,17 +21,17 @@ public class SigmaVerificator {
         System.out.println("Session verification result: "+session1.equals(session2));
     }
 
-    public static void signVerify(Generator gen, Certificate cert,Signature sign, Initialization init, Response response){
-        Verifier verifier = new Verifier(new PublicKey(getEcPoint(cert.getBody().getPub_key(),gen).normalize()),
-                sign,
-                gen);
+    public static void signVerify(Verifiable verifier, Generator gen, Certificate cert,Signature sign, Initialization init, Response response){
+//        Verifier verifier = new Verifier(new PublicKey(getEcPoint(cert.getBody().getPub_key(),gen).normalize()),
+//                sign,
+//                gen);
         System.out.println("Signature verification result: "+verify01(verifier, init, response.getEphy()));
     }
 
-    public static void signVerify00(Generator gen, Certificate cert,Signature sign,  Initialization init, Response response){
-        Verifier verifier = new Verifier(new PublicKey(getEcPoint(cert.getBody().getPub_key(),gen).normalize()),
-                sign,
-                gen);
+    public static void signVerify00(Verifiable verifier, Generator gen, Certificate cert,Signature sign,  Initialization init, Response response){
+//        Verifier verifier = new Verifier(new PublicKey(getEcPoint(cert.getBody().getPub_key(),gen).normalize()),
+//                sign,
+//                gen);
         System.out.println("Signature verification result: "+verify00(verifier, init, response));
     }
 
@@ -51,12 +52,12 @@ public class SigmaVerificator {
         return gen.getCurve().getCurve().createPoint(new BigInteger(pkX, 16), new BigInteger(pkY, 16));
     }
 
-    private static boolean verify01(Verifier verifier, Initialization init, String ephy){
+    private static boolean verify01(Verifiable verifier, Initialization init, String ephy){
         String payload = "01" + init.getSession()  + init.getEphx()+ ephy;
         return verifier.verify(payload);
     }
 
-    private static boolean verify00(Verifier verifier, Initialization init,Response response){
+    private static boolean verify00(Verifiable verifier, Initialization init,Response response){
         String payload = "00" + init.getSession() + response.getEphy() + init.getEphx();
         return verifier.verify(payload);
     }

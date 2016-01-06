@@ -29,7 +29,7 @@ public class Verifier implements Verifiable {
 
     public boolean verify(String message){
         //1
-        BigInteger e = new BigInteger(Hasher.hash(message,signature.getR(),generator.getHashName()));
+        BigInteger e = new BigInteger(1,Hasher.hash(message,signature.getR(),generator.getHashName()));
         //2
         ECPoint Q = generator.getECPoint(signature.getS(),generator.getG()).normalize().add(generator.getECPoint(signature.getR(),pk.getP()).normalize()).normalize();
 
@@ -37,8 +37,9 @@ public class Verifier implements Verifiable {
             return false;
         }
 
-        BigInteger v = new BigInteger(Hasher.hash(message,Q.getRawXCoord().toBigInteger(),generator.getHashName())).mod(generator.getN());
-
+        BigInteger v = new BigInteger(1,Hasher.hash(message,Q.normalize().getRawXCoord().toBigInteger(),generator.getHashName())).mod(generator.getN());
+        //System.out.println(v.toString(16));
+        //System.out.println(signature.getR().toString(16));
         if(v.equals(signature.getR())){
             return true;
         }

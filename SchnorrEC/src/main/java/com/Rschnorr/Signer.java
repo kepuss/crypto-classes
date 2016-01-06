@@ -1,5 +1,6 @@
 package com.Rschnorr;
 
+import com.Signable;
 import com.schnorr.Generator;
 import com.schnorr.Hasher;
 import com.schnorr.PublicKey;
@@ -13,7 +14,7 @@ import java.util.Random;
 /**
  * Created by kepuss on 20.12.15.
  */
-public class Signer {
+public class Signer implements Signable{
 
     private Ring ring;
     private Generator gen;
@@ -50,7 +51,7 @@ public class Signer {
         return ga.add(multiY);
     }
 
-    public Signature sign(String message){
+    public com.communication.model.Signature sign(String message){
         //0
         Random rand = new Random();
         int position = rand.nextInt(ring.getRingSize());
@@ -81,7 +82,7 @@ public class Signer {
 //        System.out.println("y: "+new BigInteger(gen.getPk().getP().getEncoded(false)));
 //        System.out.println("g^a: " + new BigInteger(gen.getECPoint(a.add(aSum),gen.getG()).getEncoded(false)).mod(gen.getN()));
 
-        return new Signature(message,RList,hashList,sigma);
+        return new com.communication.model.Signature(message,RList,hashList,sigma);
 
     }
 

@@ -1,21 +1,26 @@
+import com.Rschnorr.Ring;
 import com.Utils;
 import com.schnorr.Generator;
 import com.schnorr.PublicKey;
 import com.schnorr.Signer;
 import com.schnorr.Verifier;
-import com.sigma.Sender;
 import com.sigma.steps.Final;
 import com.sigma.steps.Finish;
 import com.sigma.steps.Initialization;
+import com.sigma.Sender;
 import com.sigma.steps.Response;
 import org.junit.Test;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Created by kepuss on 06.01.16.
+ * Created by kepuss on 04.01.16.
  */
-public class SigmaTest {
+public class RSigmaTest {
     @Test
-    public void sigmaTest(){
+    public void ringTest(){
         Generator gen = new Generator("brainpoolP256r1","SHA-256");
 
         // SIDE A
@@ -28,19 +33,22 @@ public class SigmaTest {
         System.out.println(Sender.send(gen, response, false));
 
         // SIDE A
+        List<PublicKey> pklist = new ArrayList<PublicKey>();
+        pklist.add(new PublicKey(Utils.getECPoint(response.getCertb().getBody().getPub_key(),gen)));
+        Ring ring = new Ring(1,gen,pklist);
+        com.Rschnorr.Signer Rsigner = new com.Rschnorr.Signer(ring,gen);
 
         Verifier verifier = new Verifier(new PublicKey( Utils.getECPoint(response.getCertb().getBody().getPub_key(), gen).normalize()),
                 response.getSignb(),
                 gen);
-        Finish last = new Finish(verifier,response,gen,init,signer);
+
+        Finish last = new Finish(verifier, response,gen,init,Rsigner);
         System.out.println(Sender.send(gen, last,false));
         System.out.println("Side A key:" + last.getK0().toString(16));
 
         // SIDE B
-        Verifier verifierB = new Verifier(new PublicKey( Utils.getECPoint(last.getCerta().getBody().getPub_key(), gen).normalize()),
-                last.getSigna(),
-                gen);
-        Final fin = new Final(verifierB, response,last,gen,init);
+        com.Rschnorr.Verifier Rverifier = new com.Rschnorr.Verifier(gen,ring,last.getSigna());
+        Final fin = new Final(Rverifier, response,last,gen,init);
         System.out.println("Side B key:" + fin.getK0().toString(16));
     }
 }

@@ -18,6 +18,11 @@ public class Ring {
     private List<PublicKey> withGenPk;
 
 
+    public Ring(int ringSize, Generator gen, List<PublicKey> ringPKs) {
+        this.ringSize = ringSize;
+        this.gen = gen;
+        this.ringPKs = ringPKs;
+    }
 
     public Ring(Generator gen, int size) {
         this.ringSize = size;

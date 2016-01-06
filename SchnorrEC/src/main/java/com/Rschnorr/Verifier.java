@@ -1,5 +1,6 @@
 package com.Rschnorr;
 
+import com.Verifiable;
 import com.schnorr.Generator;
 import com.schnorr.Hasher;
 import com.schnorr.PublicKey;
@@ -8,20 +9,23 @@ import org.bouncycastle.math.ec.ECPoint;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import com.communication.model.Signature;
 
 /**
  * Created by kepuss on 20.12.15.
  */
-public class Verifier {
+public class Verifier implements Verifiable {
     private Generator gen;
     private Ring ring;
+    private Signature signature;
 
-    public Verifier(Generator gen, Ring ring) {
+    public Verifier(Generator gen, Ring ring, Signature signature) {
         this.gen = gen;
         this.ring = ring;
+        this.signature = signature;
     }
 
-    public boolean verify(Signature signature, String message){
+    public boolean verify( String message){
 
         for(int i =0;i<signature.getH().size();i++){
             BigInteger hash = new BigInteger(1, Hasher.hash(message,signature.getR().get(i).normalize().getRawXCoord().toBigInteger(),gen.getHashName()));

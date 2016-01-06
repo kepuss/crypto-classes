@@ -1,8 +1,9 @@
 
 import com.Rschnorr.Ring;
-import com.Rschnorr.Signature;
+
 import com.Rschnorr.Signer;
 import com.Rschnorr.Verifier;
+import com.communication.model.Signature;
 import com.schnorr.Generator;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class RingTest {
         Signature signature = signer.sign("Message");
 
 
-        Verifier verifier = new Verifier(gen,ring);
-        System.out.print(verifier.verify(signature,"Message"));
+        Verifier verifier = new Verifier(gen,ring,signature);
+        System.out.print(verifier.verify("Message"));
     }
 }

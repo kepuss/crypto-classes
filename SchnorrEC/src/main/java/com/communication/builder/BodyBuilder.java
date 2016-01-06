@@ -1,5 +1,6 @@
 package com.communication.builder;
 
+import com.Utils;
 import com.communication.model.Body;
 import com.schnorr.Generator;
 import com.schnorr.PublicKey;
@@ -30,10 +31,7 @@ public class BodyBuilder {
     public static Generator getGenerator(Body body){
 
         Generator gen = new Generator(body.getPar(),body.getHash());
-        String pk = body.getPub_key().substring(2);
-        String pkX= pk.substring(0, pk.length() / 2);
-        String pkY= pk.substring((pk.length() / 2) , pk.length());
-        ECPoint P = gen.getCurve().getCurve().createPoint(new BigInteger(pkX, HEX), new BigInteger(pkY, HEX));
+        ECPoint P = Utils.getECPoint(body.getPub_key(),gen);
         PublicKey publicKey = new PublicKey();
         publicKey.setP(P);
         gen.setPk(publicKey);

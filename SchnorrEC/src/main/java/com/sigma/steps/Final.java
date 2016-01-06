@@ -1,5 +1,6 @@
 package com.sigma.steps;
 
+import com.Verifiable;
 import com.schnorr.Generator;
 import javafx.scene.layout.BackgroundImage;
 import lombok.Getter;
@@ -13,9 +14,9 @@ import java.math.BigInteger;
 public class Final {
     private BigInteger K0;
 
-    public Final(Response response, Finish finish, Generator gen,Initialization init) {
+    public Final(Verifiable verifier, Response response, Finish finish, Generator gen,Initialization init) {
         SigmaVerificator.sessionVerify(response.getSession(),finish.getSession());
-        SigmaVerificator.signVerify00(gen, finish.getCerta(), finish.getSigna(), init, response);
+        SigmaVerificator.signVerify00(verifier, gen, finish.getCerta(), finish.getSigna(), init, response);
         SigmaVerificator.macVerify(init.getSession(), gen, "00", finish.getCerta(), response.getK1(), finish.getMaca());
 
         K0 = response.getK0();

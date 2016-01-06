@@ -5,8 +5,11 @@ import com.Utils;
 import com.Verifiable;
 import com.communication.builder.BodyBuilder;
 import com.communication.model.Certificate;
+import com.communication.model.RSignature;
 import com.communication.model.Signature;
+import com.communication.model.SimpleSignature;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.schnorr.Generator;
 import com.schnorr.PublicKey;
 import com.schnorr.Verifier;
@@ -39,8 +42,7 @@ public class Finish implements Sendable{
     @Getter
     @Setter
     private Certificate certa;
-    @Getter
-    @Setter
+
     private Signature signa;
     @Getter
     @Setter
@@ -51,7 +53,7 @@ public class Finish implements Sendable{
 
 
 
-    public Finish(Response response, Generator gen, Initialization init,Signable signer) {
+    public Finish(Verifiable verifier,Response response, Generator gen, Initialization init,Signable signer) {
 
         ECPoint g_y = Utils.getECPoint(response.getEphy(),gen);
         ECPoint K = gen.getECPoint(init.getX(),g_y);
@@ -59,7 +61,7 @@ public class Finish implements Sendable{
         K0 = new BigInteger(1,Utils.KDF(K,0));
 
         SigmaVerificator.sessionVerify(init.getSession(),response.getSession());
-        SigmaVerificator.signVerify(gen, response.getCertb(), response.getSignb(), init, response);
+        SigmaVerificator.signVerify(verifier, gen, response.getCertb(), response.getSignb(), init, response);
         SigmaVerificator.macVerify(init.getSession(), gen, "01", response.getCertb(), K1, response.getMacb());
 
 
@@ -99,5 +101,24 @@ public class Finish implements Sendable{
     @JsonIgnore
     public BigInteger getK0() {
         return K0;
+    }
+
+    @JsonIgnore
+    public Signature getSigna() {
+        return signa;
+    }
+    @JsonProperty(value = "signa")
+    public Sendable getSignaSelect(){
+
+            if(signa.getE() ==null){
+                return new RSignature(signa);
+            }else{
+                return new SimpleSignature(signa);
+            }
+
+    }
+
+    public void setSigna(Signature signa) {
+        this.signa = signa;
     }
 }

@@ -5,8 +5,11 @@ import com.Signable;
 import com.Utils;
 import com.communication.builder.BodyBuilder;
 import com.communication.model.Certificate;
+import com.communication.model.RSignature;
 import com.communication.model.Signature;
+import com.communication.model.SimpleSignature;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.schnorr.Generator;
 import com.sigma.Sendable;
 import com.sigma.Sender;
@@ -32,8 +35,7 @@ public class Response implements Sendable {
     @Getter
     @Setter
     private Certificate certb;
-    @Getter
-    @Setter
+
     private Signature signb;
     @Getter
     @Setter
@@ -100,5 +102,25 @@ public class Response implements Sendable {
     @JsonIgnore
     public BigInteger getK0() {
         return K0;
+    }
+
+    @JsonIgnore
+    public Signature getSignb() {
+        return signb;
+    }
+
+    @JsonProperty(value = "signb")
+    public Sendable getSignbSelect(){
+
+        if(signb.getE() ==null){
+            return new RSignature(signb);
+        }else{
+            return new SimpleSignature(signb);
+        }
+
+    }
+
+    public void setSignb(Signature signb) {
+        this.signb = signb;
     }
 }

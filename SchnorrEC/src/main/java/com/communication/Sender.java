@@ -30,6 +30,7 @@ public class Sender {
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
         String result=null;
         try {
             result =mapper.writeValueAsString(certificate);

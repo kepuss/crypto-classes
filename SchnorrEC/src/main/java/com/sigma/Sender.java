@@ -3,11 +3,13 @@ package com.sigma;
 import com.communication.builder.BodyBuilder;
 import com.communication.builder.SignatureBuilder;
 import com.communication.model.Certificate;
+import com.communication.model.RSignature;
+import com.communication.model.Signature;
+import com.communication.model.SimpleSignature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.schnorr.Generator;
-import com.schnorr.Signature;
 
 /**
  * Created by kepuss on 04.01.16.
