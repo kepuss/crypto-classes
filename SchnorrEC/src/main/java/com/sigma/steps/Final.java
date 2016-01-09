@@ -12,7 +12,7 @@ import java.math.BigInteger;
  */
 @Getter
 public class Final {
-    private BigInteger K0;
+    private byte[] K0;
 
     public Final(Verifiable verifier, Response response, Finish finish, Generator gen,Initialization init) {
         SigmaVerificator.sessionVerify(response.getSession(),finish.getSession());

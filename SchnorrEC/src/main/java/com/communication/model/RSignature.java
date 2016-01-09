@@ -1,9 +1,16 @@
 package com.communication.model;
 
 import com.Utils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.schnorr.Generator;
 import com.sigma.Sendable;
 import lombok.Getter;
 import lombok.Setter;
+import org.bouncycastle.math.ec.ECPoint;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kepuss on 06.01.16.
@@ -25,5 +32,25 @@ public class RSignature implements Sendable {
         h_B = signature.getH().get(1).toString(16);
 
         sigma = signature.getSigma().toString(16);
+    }
+
+    @JsonIgnore
+    public Signature getSignature(){
+
+        Generator gen = new Generator("brainpoolP256r1","SHA-256");
+        Signature signature = new Signature();
+        List<ECPoint> R = new ArrayList<ECPoint>();
+        R.add(Utils.getECPoint(R_A,gen));
+        R.add(Utils.getECPoint(R_B, gen));
+        signature.setR(R);
+
+        List<BigInteger> H = new ArrayList<BigInteger>();
+        H.add(new BigInteger(h_A,16));
+        H.add(new BigInteger(h_B, 16));
+        signature.setH(H);
+
+        signature.setSigma(new BigInteger(sigma,16));
+        return signature;
+
     }
 }

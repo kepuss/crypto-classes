@@ -10,31 +10,28 @@ import com.sigma.steps.Initialization;
 import com.sigma.steps.Response;
 import org.junit.Test;
 
+import java.util.Scanner;
+
 /**
- * Created by kepuss on 06.01.16.
+ * Created by kepuss on 09.01.16.
  */
-public class SigmaTest {
+public class InputSigmaTestB {
     @Test
     public void sigmaTest(){
         Generator gen = new Generator("brainpoolP256r1","SHA-256");
 
-        // SIDE A
-        Initialization init = new Initialization(gen);
-        System.out.println(Sender.send(gen, init, false));
+        Scanner reader = new Scanner(System.in);
+        String initJson = reader.nextLine();
+        Initialization init= Utils.mapObject(Initialization.class, initJson);
 
         // SIDE B
         Signer signer = new Signer(gen);
         Response response = new Response(gen,signer,init);
         System.out.println(Sender.send(gen, response, false));
 
-        // SIDE A
 
-        Verifier verifier = new Verifier(new PublicKey( Utils.getECPoint(response.getCertb().getBody().getPub_key(), gen).normalize()),
-                response.getSignb(),
-                gen);
-        Finish last = new Finish(verifier,response,gen,init,signer);
-        System.out.println(Sender.send(gen, last,false));
-        System.out.println("Side A key:" + last.getK0());
+        String finishJson = reader.nextLine();
+        Finish last= Utils.mapObject(Finish.class, finishJson);
 
         // SIDE B
         Verifier verifierB = new Verifier(new PublicKey( Utils.getECPoint(last.getCerta().getBody().getPub_key(), gen).normalize()),

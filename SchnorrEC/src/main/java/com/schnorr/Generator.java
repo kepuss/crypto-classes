@@ -48,6 +48,30 @@ public class Generator {
         sk.setPk(pk);
     }
 
+    public Generator(String curveName, String hashName, BigInteger a) {
+        this.hashName=hashName;
+        this.curveName=curveName;
+
+        curve = ECNamedCurveTable.getByName(curveName); // or whatever curve you want to us
+
+        g = curve.getG();
+        N = curve.getN();
+
+
+        //BigInteger a = getRandomBigInt();
+        //2
+        ECPoint P = getECPoint(a,g);
+        //3
+
+
+        //5
+        pk.setP(P);
+//        pk.setQ(getECPoint(a,P));
+
+        sk.setA(a);
+        sk.setPk(pk);
+    }
+
 
     public  ECPoint getRandomECPoint(){
         int nBitLength = N.bitLength();

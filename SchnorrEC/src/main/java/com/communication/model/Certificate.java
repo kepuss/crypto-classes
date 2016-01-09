@@ -1,5 +1,6 @@
 package com.communication.model;
 
+import com.Utils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -18,6 +19,7 @@ public class Certificate implements Sendable{
     @Setter
     private Body body;
 
+    @JsonIgnore
     private Signature signature;
 
     @JsonIgnore
@@ -38,6 +40,18 @@ public class Certificate implements Sendable{
         }else{
             return new SimpleSignature(signature);
         }
+
+    }
+
+    @JsonProperty(value = "sign")
+    public void setSignSelect(SimpleSignature signature){
+        this.signature = signature.getSignature();
+
+//        if(signature.contains("R_y")){
+//            this.signature = Utils.mapObject(RSignature.class, signature).getSignature();
+//        }else{
+//            this.signature = Utils.mapObject(SimpleSignature.class, signature).getSignature();
+//        }
 
     }
 }

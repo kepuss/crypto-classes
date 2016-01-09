@@ -5,7 +5,9 @@ import com.communication.builder.SignatureBuilder;
 import com.communication.model.Certificate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.schnorr.Generator;
 import com.schnorr.Signature;
@@ -31,6 +33,9 @@ public class Sender {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
         mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+        //mapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
+        //mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
         String result=null;
         try {
             result =mapper.writeValueAsString(certificate);

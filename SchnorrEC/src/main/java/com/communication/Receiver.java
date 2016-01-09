@@ -37,4 +37,6 @@ public class Receiver {
         return SignatureBuilder.getSchnorrSign(cert.getSignature());
     }
 
+
+
 }

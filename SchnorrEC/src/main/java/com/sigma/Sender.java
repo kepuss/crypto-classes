@@ -7,6 +7,7 @@ import com.communication.model.RSignature;
 import com.communication.model.Signature;
 import com.communication.model.SimpleSignature;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.schnorr.Generator;
@@ -19,6 +20,9 @@ public class Sender {
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, wrap);
+        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+        //mapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
+       // mapper.enable(SerializationFeature.INDENT_OUTPUT);
         String result=null;
         try {
             result =mapper.writeValueAsString(message);

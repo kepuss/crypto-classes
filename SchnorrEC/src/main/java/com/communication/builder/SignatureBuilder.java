@@ -12,8 +12,8 @@ public class SignatureBuilder {
 
     public static Signature getSign(com.schnorr.Signature signature){
         Signature sign = new Signature();
-        sign.setE(signature.getR().toString(HEX));
-        sign.setS(signature.getS().toString(HEX));
+        sign.setE(signature.getR().toString(HEX).toUpperCase());
+        sign.setS(signature.getS().toString(HEX).toUpperCase());
         return sign;
     }
 

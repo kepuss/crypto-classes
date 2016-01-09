@@ -4,11 +4,13 @@ import com.Utils;
 import com.Verifiable;
 import com.communication.model.Certificate;
 import com.communication.model.Signature;
+import com.google.common.io.BaseEncoding;
 import com.schnorr.Generator;
 import com.schnorr.PublicKey;
 import com.schnorr.Verifier;
 import com.sigma.Sender;
 import org.bouncycastle.math.ec.ECPoint;
+import org.bouncycastle.util.Arrays;
 
 import java.math.BigInteger;
 
@@ -35,7 +37,7 @@ public class SigmaVerificator {
         System.out.println("Signature verification result: "+verify00(verifier, init, response));
     }
 
-    public static void macVerify(String session, Generator gen,String prefix, Certificate cert, BigInteger K1, String mac){
+    public static void macVerify(String session, Generator gen,String prefix, Certificate cert, byte[] K1, String mac){
 
 
         //ECPoint g_y = Utils.getECPoint(response.getEphy(),gen);
@@ -62,7 +64,7 @@ public class SigmaVerificator {
         return verifier.verify(payload);
     }
 
-    private  static boolean isMacCorrect(BigInteger K1,String session, Generator gen, Certificate cert, String mac , String prefix){
+    private  static boolean isMacCorrect(byte[] K1,String session, Generator gen, Certificate cert, String mac , String prefix){
         String calculatedMac = getMac(prefix, K1, session, gen, cert);
         if(calculatedMac.equals(mac)){
             return true;
@@ -71,9 +73,13 @@ public class SigmaVerificator {
         }
     }
 
-    private static String getMac(String prefix, BigInteger X, String session, Generator gen, Certificate certb) {
-        String message = prefix + session + new BigInteger(Sender.send(gen, certb, false).getBytes()).toString(16);
-        return new BigInteger(1, Utils.computeMac(message.getBytes(), X)).toString(16);
+    private static String getMac(String prefix, byte[] X, String session, Generator gen, Certificate certb) {
+        //String message = prefix + session + new BigInteger(Sender.send(gen, certb, false).getBytes()).toString(16);
+        //return new BigInteger(1, Utils.computeMac(message.getBytes(), X)).toString(16);
+
+        byte[] message = BaseEncoding.base16().decode(prefix + session);
+        byte[] payload = Arrays.concatenate(message, Sender.send(gen, certb, false).getBytes());
+        return BaseEncoding.base16().encode(Utils.computeMac(payload, X));
 
     }
 }

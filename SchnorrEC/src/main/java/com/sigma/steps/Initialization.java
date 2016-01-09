@@ -24,9 +24,19 @@ public class Initialization implements Sendable {
     @Setter
     private String session;
 
+    public Initialization() {
+    }
+
     public Initialization(Generator gen) {
         X=gen.getRandomBigInt();
-        session = gen.getRandomBigInt().toString(16);
+        session = gen.getRandomBigInt().toString(16).toUpperCase();
+        ECPoint randomPoint = gen.getECPoint(X, gen.getG());
+        ephx = Utils.ecToString(randomPoint).toUpperCase();
+    }
+
+    public Initialization(Generator gen, BigInteger X, String session) {
+        this.X=X;
+        this.session = session;
         ECPoint randomPoint = gen.getECPoint(X, gen.getG());
         ephx = Utils.ecToString(randomPoint);
     }

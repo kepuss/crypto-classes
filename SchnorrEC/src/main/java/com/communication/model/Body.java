@@ -11,11 +11,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Body {
-    private String key_holder;
-    private String pub_key;
-    private String par;
-    private String hash;
     private String ca_name;
+    private String hash;
+    private String key_holder;
+    private String par;
+    private String pub_key;
+
+
+
 
 
 

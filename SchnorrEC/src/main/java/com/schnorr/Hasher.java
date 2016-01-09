@@ -1,5 +1,6 @@
 package com.schnorr;
 
+import com.google.common.io.BaseEncoding;
 import org.bouncycastle.util.Arrays;
 
 import java.math.BigInteger;
@@ -17,7 +18,14 @@ public class Hasher {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        md.update(Arrays.concatenate(message.getBytes(), R.toByteArray()));
+
+        //md.update(Arrays.concatenate(message.getBytes(), R.toByteArray()));
+//        System.out.println(message.getBytes().length);
+//        System.out.println(R.toString(16).getBytes().length);
+//        System.out.println(BaseEncoding.base16().encode(R.toByteArray()));
+
+        byte[] input = BaseEncoding.base16().decode((message + BaseEncoding.base16().encode(R.toByteArray())).toUpperCase());
+        md.update(input);
         return md.digest();
     }
 }

@@ -28,7 +28,7 @@ public class RSigmaTest {
         System.out.println(Sender.send(gen, init, false));
 
         // SIDE B
-        Signer signer = new Signer(gen.getSk(),gen);
+        Signer signer = new Signer(gen);
         Response response = new Response(gen,signer,init);
         System.out.println(Sender.send(gen, response, false));
 
@@ -44,11 +44,11 @@ public class RSigmaTest {
 
         Finish last = new Finish(verifier, response,gen,init,Rsigner);
         System.out.println(Sender.send(gen, last,false));
-        System.out.println("Side A key:" + last.getK0().toString(16));
+        System.out.println("Side A key:" + last.getK0());
 
         // SIDE B
         com.Rschnorr.Verifier Rverifier = new com.Rschnorr.Verifier(gen,ring,last.getSigna());
         Final fin = new Final(Rverifier, response,last,gen,init);
-        System.out.println("Side B key:" + fin.getK0().toString(16));
+        System.out.println("Side B key:" + fin.getK0());
     }
 }

@@ -10,6 +10,7 @@ import com.communication.model.Signature;
 import com.communication.model.SimpleSignature;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.io.BaseEncoding;
 import com.schnorr.Generator;
 import com.schnorr.PublicKey;
 import com.schnorr.Verifier;
@@ -18,6 +19,7 @@ import com.sigma.Sender;
 import lombok.Getter;
 import lombok.Setter;
 import org.bouncycastle.math.ec.ECPoint;
+import org.bouncycastle.util.Arrays;
 
 import java.math.BigInteger;
 
@@ -35,9 +37,9 @@ public class Finish implements Sendable{
     final static String PREFIX = "00";
 
     @JsonIgnore
-    private BigInteger K1;
+    private byte[] K1;
     @JsonIgnore
-    private BigInteger K0;
+    private byte[] K0;
 
     @Getter
     @Setter
@@ -51,14 +53,15 @@ public class Finish implements Sendable{
     @Setter
     private String session;
 
-
+    public Finish() {
+    }
 
     public Finish(Verifiable verifier,Response response, Generator gen, Initialization init,Signable signer) {
 
         ECPoint g_y = Utils.getECPoint(response.getEphy(),gen);
         ECPoint K = gen.getECPoint(init.getX(),g_y);
-        K1 = new BigInteger(1,Utils.KDF(K,1));
-        K0 = new BigInteger(1,Utils.KDF(K,0));
+        K1 = Utils.KDF(K,"01");
+        K0 = Utils.KDF(K,"00");
 
         SigmaVerificator.sessionVerify(init.getSession(),response.getSession());
         SigmaVerificator.signVerify(verifier, gen, response.getCertb(), response.getSignb(), init, response);
@@ -89,17 +92,18 @@ public class Finish implements Sendable{
         return signer.sign(payload);
     }
 
-    private String getMac(String prefix, BigInteger X, Initialization init, Generator gen) {
-        String message = prefix + init.getSession() + new BigInteger(Sender.send(gen, certa, false).getBytes()).toString(16);
-        return new BigInteger(1,Utils.computeMac(message.getBytes(), X)).toString(16);
+    private String getMac(String prefix, byte[] X, Initialization init, Generator gen) {
+        byte[] message = BaseEncoding.base16().decode(prefix + init.getSession());
+        byte[] payload = Arrays.concatenate(message, Sender.send(gen, certa, false).getBytes());
+        return BaseEncoding.base16().encode(Utils.computeMac(payload, X));
 
     }
     @JsonIgnore
-    public BigInteger getK1() {
+    public byte[] getK1() {
         return K1;
     }
     @JsonIgnore
-    public BigInteger getK0() {
+    public byte[] getK0() {
         return K0;
     }
 
@@ -117,7 +121,7 @@ public class Finish implements Sendable{
             }
 
     }
-
+    @JsonProperty(value = "signa")
     public void setSigna(Signature signa) {
         this.signa = signa;
     }
