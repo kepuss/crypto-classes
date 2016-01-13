@@ -20,11 +20,12 @@ import java.util.Scanner;
 public class SigmaSchnorrA {
     public static void sigmaA(){
         Generator gen = new Generator("brainpoolP256r1","SHA-256");
-        String session = "75C014CD16F008664E60CE93E187043D";
-        BigInteger X = new BigInteger("73246574710268087090324911967279444333339317441888111830190771098948520286872");
+       // String session = "75C014CD16F008664E60CE93E187043D";
+       // BigInteger X = new BigInteger("73246574710268087090324911967279444333339317441888111830190771098948520286872");
 
         // SIDE A
-        Initialization init = new Initialization(gen,X,session);
+       // Initialization init = new Initialization(gen,X,session);
+        Initialization init = new Initialization(gen);
         System.out.println(Sender.send(gen, init, false));
 
 

@@ -18,15 +18,15 @@ public class SimpleSignature implements Sendable {
     }
 
     public SimpleSignature(Signature signature){
-        this.e = signature.getE();
-        this.s = signature.getS();
+        this.e = signature.getE().toUpperCase();
+        this.s = signature.getS().toUpperCase();
     }
 
     @JsonIgnore
     public Signature getSignature(){
         Signature signature = new Signature();
-        signature.setE(e);
-        signature.setS(s);
+        signature.setE(e.toUpperCase());
+        signature.setS(s.toUpperCase());
         return signature;
     }
 }

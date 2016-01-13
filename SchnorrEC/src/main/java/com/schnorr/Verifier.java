@@ -32,6 +32,7 @@ public class Verifier implements Verifiable {
 
 
 
+        System.out.println("verify message: ");
         //1
         BigInteger e = new BigInteger(1,Hasher.hash(message,signature.getR(),generator.getHashName()));
         System.out.println("e "+e.toString(16));
@@ -44,7 +45,8 @@ public class Verifier implements Verifiable {
             return false;
         }
 
-        BigInteger v = new BigInteger(1,Hasher.hash(message,Q.normalize().getRawXCoord().toBigInteger(),generator.getHashName())).mod(generator.getN());
+       // BigInteger v = new BigInteger(1,Hasher.hash(message,Q.normalize().getRawXCoord().toBigInteger(),generator.getHashName())).mod(generator.getN());
+        BigInteger v = new BigInteger(1,Hasher.hash(message,Q.normalize().getRawXCoord().toBigInteger(),generator.getHashName()));
         System.out.println("v "+ v.toString(16));
         //System.out.println(signature.getR().toString(16));
         if(v.equals(signature.getR())){

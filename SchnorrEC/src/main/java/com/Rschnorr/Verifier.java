@@ -23,6 +23,7 @@ public class Verifier implements Verifiable {
         this.gen = gen;
         this.ring = ring;
         this.signature = signature;
+        System.out.println("Ring verifier init");
     }
 
     public boolean verify( String message){
@@ -32,11 +33,12 @@ public class Verifier implements Verifiable {
             System.out.println(hash.toString(16));
             System.out.println(signature.getH().get(i).toString(16));
             if(!hash.equals(signature.getH().get(i))){
-                return false;
+                //return false;
+                System.out.println("fales");
             }
         }
         //1
-        BigInteger left = new BigInteger(gen.getECPoint(signature.getSigma(), gen.getG()).getEncoded(false)).mod(gen.getN());
+        BigInteger left = new BigInteger(1,gen.getECPoint(signature.getSigma(), gen.getG()).getEncoded(false)).mod(gen.getN());
         BigInteger right = calculateRight(signature);
 
 
@@ -63,6 +65,6 @@ public class Verifier implements Verifiable {
                 Yhash = Yhash.add(gen.getECPoint(signature.getH().get(i), ring.getAllRingPKs().get(i).getP()));
             }
         }
-        return  new BigInteger(Rmulti.add(Yhash).getEncoded(false)).mod(gen.getN());
+        return  new BigInteger(1,Rmulti.add(Yhash).getEncoded(false)).mod(gen.getN());
     }
 }

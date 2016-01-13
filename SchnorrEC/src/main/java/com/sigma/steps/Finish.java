@@ -79,7 +79,8 @@ public class Finish implements Sendable{
 
     private Certificate getCert(Generator gen) {
         Certificate certificate = new Certificate();
-        certificate.setBody(BodyBuilder.getBody(KEY_HOLDER, gen.getPk(), gen.getCurveName(), gen.getHashName(), CA_NAME));
+        //certificate.setBody(BodyBuilder.getBody(KEY_HOLDER, gen.getPk(), gen.getCurveName(), gen.getHashName(), CA_NAME));
+        certificate.setBody(BodyBuilder.getBody(KEY_HOLDER, gen.getPk(), gen.getCurveName(), gen.getHashName().replace("-",""), CA_NAME));
         Signature sign = new Signature();
         sign.setE(gen.getRandomBigInt().toString(16));
         sign.setS(gen.getRandomBigInt().toString(16));
@@ -122,7 +123,20 @@ public class Finish implements Sendable{
 
     }
     @JsonProperty(value = "signa")
-    public void setSigna(Signature signa) {
-        this.signa = signa;
+    public void setSigna(RSignature signa) {
+
+            this.signa = signa.getSignature();
+
     }
+
+//    @JsonProperty(value = "signa")
+//    public void setSigna(String signa) {
+//
+//        if(signa.contains("R_A")){
+//            this.signa = Utils.mapObject(RSignature.class,signa).getSignature();
+//        }else{
+//            this.signa = Utils.mapObject(SimpleSignature.class,signa).getSignature();
+//        }
+//        //this.signa = signa;
+//    }
 }

@@ -24,6 +24,13 @@ public class Ring {
         this.ringPKs = ringPKs;
     }
 
+    public Ring(int ringSize, Generator gen, List<PublicKey> ringPKs,List<PublicKey> withGenPk) {
+        this.ringSize = ringSize;
+        this.gen = gen;
+        this.ringPKs = ringPKs;
+        this.withGenPk = withGenPk;
+    }
+
     public Ring(Generator gen, int size) {
         this.ringSize = size;
         ringPKs = new ArrayList<PublicKey>();

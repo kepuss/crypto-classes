@@ -1,6 +1,8 @@
 package com;
 
 
+import com.Services.RSigmaSchnorrA;
+import com.Services.RSigmaSchnorrB;
 import com.Services.SigmaSchnorrA;
 import com.Services.SigmaSchnorrB;
 import com.communication.Receiver;
@@ -34,6 +36,10 @@ public class Main {
                     SigmaSchnorrA.sigmaA(); break;
                 case '2':
                     SigmaSchnorrB.sigmaB(); break;
+                case '3':
+                    RSigmaSchnorrB.sigmaB(); break;
+                case '4':
+                    RSigmaSchnorrA.sigmaA(); break;
             }
         }
 

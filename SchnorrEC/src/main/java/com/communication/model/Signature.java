@@ -1,11 +1,14 @@
 package com.communication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.schnorr.PublicKey;
 import lombok.Getter;
 import lombok.Setter;
 import org.bouncycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,5 +33,18 @@ public class Signature {
         R = r;
         this.h = h;
         this.sigma = sigma;
+    }
+
+    @JsonIgnore
+    public List<PublicKey> getPKs(){
+        List<PublicKey> pks = new ArrayList<PublicKey>();
+        //for(ECPoint point : R){
+        for(int i=0;i<R.size();i++){
+        //for(int i=1;i>=0;i--){
+            PublicKey pk = new PublicKey();
+            pk.setP(R.get(i));
+            pks.add(pk);
+        }
+        return pks;
     }
 }

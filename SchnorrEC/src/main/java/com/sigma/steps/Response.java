@@ -69,12 +69,34 @@ public class Response implements Sendable {
         ECPoint K = gen.getECPoint(Y, g_X);
 
 
-        ephy = Utils.ecToString(g_Y);
+        ephy = Utils.ecToString(g_Y).toUpperCase();
         certb = getCert(gen);
         signb = getSign(PREFIX, init, signer);
 
          K1 = Utils.KDF(K, "01");
          K0 = Utils.KDF(K, "00");
+
+
+        macb = getMac(PREFIX, K1,init,gen);
+    }
+
+    public Response(Generator gen, Signable signer, Initialization init, ECPoint g_Y) {
+        //session = gen.getRandomBigInt().toString(16);
+        session = init.getSession();
+
+        BigInteger Y = gen.getRandomBigInt();
+        //ECPoint g_Y = gen.getECPoint(Y, gen.getG());
+
+        ECPoint g_X = Utils.getECPoint(init.getEphx(), gen);
+        ECPoint K = gen.getECPoint(Y, g_X);
+
+
+        ephy = Utils.ecToString(g_Y).toUpperCase();
+        certb = getCert(gen);
+        signb = getSign(PREFIX, init, signer);
+
+        K1 = Utils.KDF(K, "01");
+        K0 = Utils.KDF(K, "00");
 
 
         macb = getMac(PREFIX, K1,init,gen);
@@ -107,7 +129,7 @@ public class Response implements Sendable {
 
     private Certificate getCert(Generator gen) {
         Certificate certificate = new Certificate();
-        certificate.setBody(BodyBuilder.getBody(KEY_HOLDER, gen.getPk(), gen.getCurveName(), gen.getHashName(), CA_NAME));
+        certificate.setBody(BodyBuilder.getBody(KEY_HOLDER, gen.getPk(), gen.getCurveName(), gen.getHashName().replace("-",""), CA_NAME));
         Signature sign = new Signature();
         sign.setE(gen.getRandomBigInt().toString(16));
         sign.setS(gen.getRandomBigInt().toString(16));
@@ -157,6 +179,9 @@ public class Response implements Sendable {
     public void setSignb(Signature signb) {
         this.signb = signb;
     }
+
+
+
 
 
 }

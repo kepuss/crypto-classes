@@ -23,8 +23,16 @@ public class Hasher {
 //        System.out.println(message.getBytes().length);
 //        System.out.println(R.toString(16).getBytes().length);
 //        System.out.println(BaseEncoding.base16().encode(R.toByteArray()));
+        String Rhex = BaseEncoding.base16().encode(R.toByteArray());
+        System.out.println("-------------" + Rhex);
+        if(Rhex.startsWith("00") && Rhex.length() != 64){
+            Rhex = Rhex.substring(2);
+        }
+        System.out.println("-------------"+Rhex);
 
-        byte[] input = BaseEncoding.base16().decode((message + BaseEncoding.base16().encode(R.toByteArray())).toUpperCase());
+        //byte[] input = BaseEncoding.base16().decode((message + BaseEncoding.base16().encode(R.toByteArray())).toUpperCase());
+        byte[] input = BaseEncoding.base16().decode((message + Rhex).toUpperCase());
+        System.out.println("input: "+BaseEncoding.base16().encode(input));
         md.update(input);
         return md.digest();
     }
